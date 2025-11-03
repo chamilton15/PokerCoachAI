@@ -1,0 +1,110 @@
+======================================================================
+POKER COACH AI - SESSION ANALYSIS
+======================================================================
+
+PLAYER: Hero
+HANDS ANALYZED: 56
+
+OVERALL STATISTICS
+======================================================================
+VPIP: 50.0% (Optimal range: 20-30%)
+PFR:  0.0% (Optimal range: 15-22%)
+Aggression Factor: 0.24 (Target: 2.0-2.5)
+3-Bet: 0.0%
+C-Bet: 0.0% (Optimal: 60-70%)
+
+POSITION BREAKDOWN
+======================================================================
+CO    :  2 hands, VPIP 50.0%, PFR 0.0%
+HJ    :  8 hands, VPIP 62.5%, PFR 0.0%
+MP    : 22 hands, VPIP 45.5%, PFR 0.0%
+UTG   : 24 hands, VPIP 50.0%, PFR 0.0%
+
+STRATEGY ANALYSIS
+======================================================================
+Agreement with Baseline: 46.4%
+Strategic Mistakes Found: 30
+
+MISTAKE BREAKDOWN:
+  • Over Calling: 24 (80%)
+  • Over Folding: 3 (10%)
+  • Under Aggressive: 3 (10%)
+
+TOP RECOMMENDATIONS
+======================================================================
+
+#1: REDUCE WEAK CALLS
+----------------------------------------------------------------------
+
+ISSUE:
+  You're calling too often with weak hands
+  Frequency: 24 times (43% of hands)
+
+EXAMPLES:
+  • Hand #16: Preflop facing none with score_5 from UTG → You cc, Optimal: fold
+  • Hand #45: Preflop facing none with score_5 from UTG → You cc, Optimal: fold
+
+WHY THIS MATTERS:
+  Calling with weak hands in bad spots loses money over time
+
+HOW TO IMPROVE:
+  ✓ Be more selective about which hands you call with
+  ✓ Fold more often when out of position with marginal hands
+  ✓ Consider 3-betting or folding instead of passively calling
+  ✓ Respect raises from tight players - they usually have it
+
+ESTIMATED IMPACT: +21.4 BB/100 hands potential improvement
+
+#2: STOP OVER-FOLDING
+----------------------------------------------------------------------
+
+ISSUE:
+  You're folding too often in profitable situations
+  Frequency: 3 times (5% of hands)
+
+EXAMPLES:
+  • Hand #1: Preflop facing none with score_5 from HJ → You f, Optimal: raise
+  • Hand #40: Preflop facing none with score_5 from HJ → You f, Optimal: raise
+
+WHY THIS MATTERS:
+  You're leaving money on the table by being too cautious
+
+HOW TO IMPROVE:
+  ✓ Call more often with medium-strength hands when in position
+  ✓ Don't treat single raises as super-strong - many players raise wide
+  ✓ Consider your pot odds - if getting 3:1 or better, call lighter
+  ✓ Medium pairs (66-99) are often profitable calls in position
+
+ESTIMATED IMPACT: +2.7 BB/100 hands potential improvement
+
+#3: INCREASE AGGRESSION
+----------------------------------------------------------------------
+
+ISSUE:
+  You're playing too passively with strong hands
+  Frequency: 3 times (5% of hands)
+
+EXAMPLES:
+  • Hand #290: Preflop facing none with score_5 from HJ → You cc, Optimal: raise
+  • Hand #368: Preflop facing none with score_5 from HJ → You cc, Optimal: raise
+
+WHY THIS MATTERS:
+  Passive play misses value and makes you predictable
+
+HOW TO IMPROVE:
+  ✓ Raise more often with premium hands - build the pot
+  ✓ Don't slow-play too often - aggressive play wins more
+  ✓ Add some 3-bets to your game with strong hands
+  ✓ Bet for value when you think you're ahead
+
+ESTIMATED IMPACT: +2.7 BB/100 hands potential improvement
+
+======================================================================
+SUMMARY
+======================================================================
+
+Significant strategic improvements needed. Focus on fundamentals:
+position, hand selection, and aggression. Study the recommendations carefully.
+
+Keep up the good work and keep learning!
+======================================================================
