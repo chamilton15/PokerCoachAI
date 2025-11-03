@@ -102,3 +102,4 @@ class HandStrengthEvaluator:
         }
         return position_rank.get(position, 2)
 
+
