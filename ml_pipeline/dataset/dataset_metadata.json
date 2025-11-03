@@ -1,0 +1,16 @@
+{
+  "num_train": 7478,
+  "num_val": 934,
+  "num_test": 936,
+  "metadata": {
+    "num_classes": 3,
+    "current_feature_dim": 11,
+    "history_max_length": 20,
+    "history_feature_dim": 5,
+    "label_map": {
+      "fold": 0,
+      "call": 1,
+      "raise": 2
+    }
+  }
+}
