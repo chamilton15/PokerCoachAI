@@ -1,48 +1,83 @@
 # 🎰 Poker Coach AI
 
-**Analyze poker hand histories and receive personalized coaching feedback to improve your strategy.**
+**Analyze poker hand histories and receive personalized coaching feedback powered by an LSTM neural network trained on winning players.**
 
-Built to analyze entire poker sessions and provide actionable, GTO-based recommendations for strategic improvement.
+Poker Coach AI uses deep learning to learn optimal poker strategies from hand histories of profitable players. The model was trained on 112,431 decision points from the top 20% most profitable players, achieving 63.68% test accuracy in predicting optimal actions (fold, call, raise). The system provides actionable feedback through a modern web interface, helping players identify strategic mistakes and improve their game.
 
 ---
 
 ## ✨ Features
 
-- ✅ **Parse .phhs files**: Supports standard poker hand history format
-- ✅ **Calculate Statistics**: VPIP, PFR, 3-bet%, C-bet%, Aggression Factor, position stats
-- ✅ **Strategy Analysis**: Compare player actions against simplified GTO baseline
-- ✅ **Pattern Recognition**: Identify recurring strategic mistakes
-- ✅ **Actionable Feedback**: Get specific recommendations ranked by impact
-- ✅ **Dynamic Analysis**: Analyze ANY player from ANY .phhs file
-- ✅ **Auto-extraction**: Automatically extracts player hands from multi-player files
-- ✅ **Session-level insights**: Analyzes patterns across multiple hands
+- 🤖 **LSTM Neural Network**: Trained on 112,431 decision points from top 20% profitable players
+- 🎯 **Action Prediction**: Predicts optimal actions (fold, call, raise) with 63.68% test accuracy
+- 📊 **Session Analysis**: Analyze entire poker sessions with detailed metrics
+- 💡 **AI-Powered Coaching**: GPT-4o-mini integration for human-readable strategy advice
+- 🌐 **Web Interface**: Modern React web application for easy analysis
+- 📁 **Preloaded Samples**: Test with preloaded sample files from different stake levels
+- 🔍 **Player Dropdown**: Automatic player name extraction from session files
+- ✅ **CLI Support**: Command-line tools for batch processing and automation
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: Analyze Hero's Pre-extracted Session
+### 🌐 Web Application (Recommended)
+
+The easiest way to use Poker Coach AI is through the web interface:
+
+#### 1. Start the Backend
 
 ```bash
-python poker_coach.py abs_NLH_handhq_1_Hero_extracted.phhs Hero
+cd web_app/backend
+pip install -r requirements.txt
+python app.py
 ```
 
-### Option 2: Extract & Analyze ANY Player from Large Dataset
+The backend will run on `http://localhost:5001`
+
+**Note:** For AI coaching summaries, create a `.env` file in `ml_pipeline/` with:
+```
+OPENAI_API_KEY=your_api_key_here
+```
+
+#### 2. Start the Frontend
+
+In a new terminal:
 
 ```bash
-python analyze_any_player.py "/full/path/to/dataset.phhs" "player_id" "FriendlyName"
+cd web_app/frontend
+npm install
+npm start
 ```
 
-**Example:**
+The frontend will open at `http://localhost:3000`
+
+#### 3. Analyze a Session
+
+1. Select a preloaded sample file or upload your own `.phh/.phhs` file
+2. Choose a player from the dropdown (auto-populated from the file)
+3. Click "Analyze Session"
+4. View your results including:
+   - Agreement rate with optimal play
+   - Total hands and decisions analyzed
+   - High-confidence mistakes
+   - AI-generated coaching summary
+
+### 💻 Command Line Interface
+
+For batch processing or automation:
+
+#### Option 1: Analyze a Player Session
+
 ```bash
-python analyze_any_player.py "/Users/sethfgn/Desktop/DL_Poker_Project/Poker_Data_Set/data/handhq/ABS-2009-07-01_2009-07-23_50NLH_OBFU/0.5/abs NLH handhq_1-OBFUSCATED.phhs" "l1bCLGuFqeFRwUfPsiDu/g" "Player1"
+python poker_coach.py <file.phhs> <player_name>
 ```
 
-This will automatically:
-1. 🔍 Scan the entire file for the player
-2. 📦 Extract all their hands
-3. 📊 Analyze their strategy
-4. 💾 Save report and extracted hands
+#### Option 2: Extract & Analyze from Large Dataset
+
+```bash
+python analyze_any_player.py "/path/to/dataset.phhs" "player_id" "FriendlyName"
+```
 
 ---
 
@@ -102,25 +137,36 @@ ESTIMATED IMPACT: +21.4 BB/100 hands potential improvement
 
 ```
 PokerCoachAI/
-├── poker_coach/                    # Core engine
+├── web_app/                        # Web application
+│   ├── backend/                    # Flask API server
+│   │   ├── app.py                 # Main API endpoints
+│   │   └── requirements.txt       # Python dependencies
+│   └── frontend/                   # React frontend
+│       ├── src/
+│       │   ├── App.js             # Main React component
+│       │   └── App.css            # Styling
+│       └── package.json            # Node dependencies
+│
+├── ml_pipeline/                     # Machine learning pipeline
+│   ├── extract_training_data.py   # Extract training examples
+│   ├── prepare_training_dataset.py # Data preprocessing
+│   ├── train_model.py             # Model training script
+│   ├── inference.py               # Model inference for predictions
+│   ├── tune_hyperparameters.py    # Hyperparameter tuning
+│   └── models/                     # Trained models
+│       ├── poker_coach_model.pt   # Trained LSTM model
+│       └── training_history.json  # Training metrics
+│
+├── poker_coach/                    # Core poker analysis engine
 │   ├── parser.py                  # Parse .phhs files
 │   ├── statistics.py              # Calculate poker metrics
 │   ├── hand_strength.py           # Hand evaluation
-│   ├── strategy.py                # GTO baseline
-│   ├── analyzer.py                # Compare player vs baseline
 │   └── feedback.py                # Generate recommendations
 │
-├── poker_coach.py                  # Main analysis script
-├── analyze_any_player.py           # Extract & analyze any player
-├── abs_NLH_handhq_1_Hero_extracted.phhs  # Sample data
+├── poker_coach.py                  # CLI: Main analysis script
+├── analyze_any_player.py           # CLI: Extract & analyze any player
 │
-├── README.md                       # This file
-├── USAGE_GUIDE.md                 # Detailed usage guide
-└── IMPLEMENTATION_PLAN.txt        # Development plan
-
-Generated files:
-├── Hero_analysis_report.txt       # Analysis reports
-└── Player1_extracted_hands.phhs   # Extracted hands
+└── README.md                       # This file
 ```
 
 ---
@@ -155,209 +201,161 @@ See [USAGE_GUIDE.md](USAGE_GUIDE.md) for:
 
 ## 🎓 How It Works
 
-### 1. Parser
-Reads .phhs files and extracts game state, actions, positions, and outcomes.
+### 1. Data Collection
+The model was trained on 112,431 decision points extracted from the top 20% most profitable players in a dataset of over 21 million poker hands.
 
-### 2. Statistics Calculator  
-Computes standard poker metrics (VPIP, PFR, aggression, etc.) by position.
+### 2. Model Architecture
+- **LSTM Neural Network**: 2-layer LSTM with 64 hidden units to capture sequential action patterns
+- **Input Features**: 
+  - Current game state (11 dimensions): hand strength, position, pot size, stack size, etc.
+  - Action history (20 actions × 5 features): sequence of previous actions in the hand
+- **Output**: Predicts optimal action (fold, call, or raise) with 63.68% test accuracy
 
-### 3. Strategy Baseline (Simplified GTO)
-Uses Game Theory Optimal principles:
-- Position-based opening ranges
-- C-bet frequencies
-- 3-bet defense strategies
-- Pot odds considerations
+### 3. Analysis Pipeline
+1. **Parser**: Reads .phhs files and extracts game state, actions, positions, and outcomes
+2. **Inference**: Model predicts optimal action for each decision point
+3. **Comparison**: Compares player's actual actions to model predictions
+4. **Statistics**: Calculates agreement rate, identifies mistakes, and highlights patterns
+5. **AI Coaching**: GPT-4o-mini generates human-readable strategy advice
 
-### 4. Analyzer
-Compares player actions to baseline and identifies deviations.
-
-### 5. Feedback Generator
-Groups mistakes into patterns and generates actionable recommendations with estimated impact.
+### 4. Model Performance
+- **Overall Accuracy**: 63.68% test accuracy (vs 33.3% random baseline, 52.9% majority class)
+- **Per-Class Accuracy**:
+  - Fold: 82.08%
+  - Call: 46.44%
+  - Raise: 78.35%
 
 ---
 
-## 🧮 Strategy Baseline
-
-The system uses **simplified GTO** based on:
-
-## What You Get
+## 📊 What You Get
 
 The analysis includes:
 
-1. **Overall Statistics**
-   - VPIP (Voluntarily Put $ In Pot)
-   - PFR (Pre-Flop Raise %)
-   - 3-Bet %
-   - C-Bet %
-   - Aggression Factor
-   - Win Rate
+1. **Agreement Rate**
+   - Percentage of decisions that match the model's optimal predictions
+   - Higher agreement suggests better strategic play
 
-2. **Position Breakdown**
-   - Statistics by position (BTN, CO, UTG, etc.)
-   - Shows how position affects your play
+2. **Decision Breakdown**
+   - Total hands and decisions analyzed
+   - High-confidence mistakes (where model was very confident)
+   - Sample decision comparisons showing your action vs. optimal action
 
-3. **Strategic Analysis**
-   - Compares your actions to simplified GTO baseline
-   - Identifies specific mistakes and patterns
-   - Categorizes mistakes by type
+3. **AI Coaching Summary**
+   - 3-sentence high-level summary generated by GPT-4o-mini
+   - Actionable advice on how to improve your play
+   - Focuses on specific strategic adjustments
 
-4. **Top 3 Recommendations**
-   - Specific, actionable advice
-   - Examples from your actual hands
-   - Estimated impact on win rate
+4. **Detailed Metrics**
+   - Per-decision analysis with confidence scores
+   - Pattern recognition for recurring mistakes
 
-## Example Output
+## 🔧 Setup & Requirements
 
-```
-======================================================================
-POKER COACH AI - SESSION ANALYSIS
-======================================================================
+### Prerequisites
 
-PLAYER: Hero
-HANDS ANALYZED: 56
+- Python 3.8+
+- Node.js 14+ and npm
+- Trained model file: `ml_pipeline/models/poker_coach_model.pt`
 
-OVERALL STATISTICS
-======================================================================
-VPIP: 22.5% (Optimal range: 20-30%)
-PFR:  14.3% (Optimal range: 15-22%)
-Aggression Factor: 2.10 (Target: 2.0-2.5)
+### Installation
 
-...
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/chamilton15/PokerCoachAI.git
+   cd PokerCoachAI
+   ```
 
-TOP RECOMMENDATIONS
-======================================================================
+2. **Install backend dependencies**
+   ```bash
+   cd web_app/backend
+   pip install -r requirements.txt
+   ```
 
-#1: STOP OVER-FOLDING
-----------------------------------------------------------------------
+3. **Install frontend dependencies**
+   ```bash
+   cd web_app/frontend
+   npm install
+   ```
 
-ISSUE:
-  You're folding too often in profitable situations
-  Frequency: 8 times (14% of hands)
+4. **Optional: Set up OpenAI API for AI coaching**
+   ```bash
+   # Create .env file in ml_pipeline/
+   echo "OPENAI_API_KEY=your_key_here" > ml_pipeline/.env
+   ```
 
-EXAMPLES:
-  • Hand #5: Preflop facing raise with 77 from CO → You f, Optimal: call
-  
-WHY THIS MATTERS:
-  You're leaving money on the table by being too cautious
+### Running the Application
 
-HOW TO IMPROVE:
-  ✓ Call more often with medium-strength hands when in position
-  ✓ Medium pairs (66-99) are often profitable calls in position
-  
-ESTIMATED IMPACT: +1.4 BB/100 hands potential improvement
-```
+See the [Web Application README](web_app/README.md) for detailed setup instructions.
 
-## How It Works
+## 🧪 Training Your Own Model
 
-### 1. Parser
-Reads .phhs files and extracts:
-- Player actions
-- Positions
-- Hole cards (if visible)
-- Pot sizes
-- Outcomes
+To train the model from scratch:
 
-### 2. Statistics Calculator
-Calculates standard poker metrics to understand playing style.
+1. **Extract training data**
+   ```bash
+   cd ml_pipeline
+   python extract_training_data.py
+   ```
 
-### 3. Strategy Baseline
-Uses simplified GTO (Game Theory Optimal) principles:
-- Position-based opening ranges
-- Calling ranges vs raises
-- C-bet frequencies
-- 3-bet defense strategies
+2. **Prepare dataset**
+   ```bash
+   python prepare_training_dataset.py
+   ```
 
-### 4. Analyzer
-Compares player actions to baseline strategy and identifies deviations.
+3. **Train model**
+   ```bash
+   python train_model.py
+   ```
 
-### 5. Feedback Generator
-Groups mistakes into patterns and generates actionable recommendations.
+4. **Tune hyperparameters (optional)**
+   ```bash
+   python tune_hyperparameters.py
+   ```
 
-## Strategy Baseline
+See [ml_pipeline/README.md](ml_pipeline/README.md) for detailed training instructions.
 
-The baseline uses fundamental poker theory:
+## 📈 Model Performance
 
-**Pre-flop Opening Ranges by Position:**
-- UTG: Top 8% (QQ+, AK)
-- MP: Top 15% (99+, AJ+)
-- CO: Top 25% (77+, AT+)
-- BTN: Top 40% (Any pair, any ace, suited cards)
+The model achieves:
+- **63.68% test accuracy** (vs 33.3% random baseline, 52.9% majority class)
+- **82.08% fold accuracy**
+- **46.44% call accuracy**
+- **78.35% raise accuracy**
 
-**Post-flop:**
-- C-bet 65% heads-up
-- C-bet 45% multiway
-- Higher frequency in position
+## ⚠️ Limitations
 
-**Defense:**
-- Call/4-bet with premium hands vs 3-bet
-- Fold weaker hands out of position
+- Fixed 20-action history truncation (may lose context in very long sequences)
+- No explicit post-flop hand strength evaluation (only preflop strength is evaluated)
+- Trained on specific dataset; performance may vary on different game formats
+- Model struggles with "call" decisions (46.44% accuracy) compared to fold/raise
 
-## Project Structure
-
-```
-PokerCoachAI/
-├── poker_coach/
-│   ├── __init__.py
-│   ├── parser.py          # Parse .phhs files
-│   ├── statistics.py      # Calculate poker stats
-│   ├── hand_strength.py   # Evaluate hand strength
-│   ├── strategy.py        # GTO baseline strategy
-│   ├── analyzer.py        # Compare player vs baseline
-│   └── feedback.py        # Generate recommendations
-├── poker_coach.py          # Main script
-├── README.md
-└── abs_NLH_handhq_1_Hero_extracted.phhs  # Sample data
-```
-
-## Customization
-
-You can customize the strategy baseline by editing `poker_coach/strategy.py`:
-
-```python
-# Adjust opening ranges
-OPENING_RANGES = {
-    'UTG': 7,    # Tighter or looser
-    'BTN': 3,    # Adjust button range
-}
-
-# Adjust C-bet frequencies
-CBET_FREQUENCY = {
-    'heads_up': 0.65,   # Your preference
-    'multiway': 0.45,
-}
-```
-
-## Limitations
-
-This is a **simplified** GTO approximation for educational purposes:
-
-- Not as accurate as professional solvers (PioSolver, etc.)
-- ~80% accuracy vs ~98% for full CFR+ implementations
-- Doesn't account for all edge cases
-- Best for learning and improvement, not pro-level coaching
-
-## Future Enhancements
+## 🚀 Future Enhancements
 
 Potential improvements:
-- [ ] Full CFR+ integration for true GTO baseline
-- [ ] Post-flop analysis (currently focuses on pre-flop)
-- [ ] ML model to learn player-specific patterns
-- [ ] Visualization of statistics
-- [ ] Multi-session tracking
-- [ ] Opponent analysis
+- [ ] Improve call decision accuracy (currently 46.44%)
+- [ ] Post-flop hand strength evaluation
+- [ ] Longer action sequence support (beyond 20 actions)
+- [ ] Multi-session tracking and trend analysis
 - [ ] Hand range visualization
+- [ ] Real-time analysis during live play
+- [ ] Export analysis reports to PDF
 
-## Credits
+## 📚 Documentation
 
-Built for learning poker AI and strategy analysis.
+- [Web Application Guide](web_app/README.md) - Detailed web app setup and usage
+- [ML Pipeline Guide](ml_pipeline/README.md) - Model training and development
+- [Usage Guide](USAGE_GUIDE.md) - CLI usage and advanced features
 
-Uses simplified GTO principles based on:
-- Modern poker theory
-- Position-based strategy
-- Hand strength evaluation
-- Fundamental poker mathematics
+## 🤝 Contributing
 
-## License
+This project is built for educational and research purposes. Contributions welcome!
+
+## 📄 License
 
 Educational/Research use.
+
+## 🙏 Acknowledgments
+
+- Dataset: [Zenodo Poker Hand Histories](https://zenodo.org/records/13997158)
+- Built with PyTorch, React, and Flask
 

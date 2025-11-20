@@ -12,7 +12,7 @@ pip install flask flask-cors
 python app.py
 ```
 
-Backend runs on `http://localhost:5000`
+Backend runs on `http://localhost:5001`
 
 **Note:** Make sure you have the trained model at `ml_pipeline/models/poker_coach_model.pt`
 
