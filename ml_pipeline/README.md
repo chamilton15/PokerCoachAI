@@ -192,19 +192,19 @@ python prepare_training_dataset.py
 **Example output:**
 ```
 Dataset shape:
-  Current features: 9,348 examples, 11 features
-  History sequences: 9,348 examples, 20 actions, 5 features per action
-  Labels: 9,348 examples
+  Current features: 112,431 examples, 11 features
+  History sequences: 112,431 examples, 20 actions, 5 features per action
+  Labels: 112,431 examples
 
 Label distribution:
-  fold      : 2,692 (28.8%)
-  call      : 4,647 (49.7%)
-  raise     : 2,009 (21.5%)
+  call      : 53,846 (52.9%)
+  raise     : 27,164 (26.7%)
+  fold      : 20,552 (20.2%)
 
 Splitting dataset (80/10/10)...
-  Train: 7,478 examples
-  Val: 934 examples
-  Test: 936 examples
+  Train: 89,945 examples
+  Val: 11,243 examples
+  Test: 11,243 examples
 ```
 
 **Time:** ~2-5 minutes

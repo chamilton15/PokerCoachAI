@@ -120,9 +120,11 @@ class FeatureEncoder:
         for action in history:
             player_idx = action.get('player_idx', 0)
             action_type = self.encode_action(action.get('action_type', 'call'))
-            amount = action.get('amount', 0.0) / 0.50  # Normalize to BB
+            amount = action.get('amount', 0.0) or 0.0  # Handle None
+            amount = amount / 0.50  # Normalize to BB
             street = self.encode_street(action.get('street', 'preflop'))
-            pot = action.get('pot_size_after', 1.0) / 0.50  # Normalize to BB
+            pot = action.get('pot_size_after', 1.0) or 1.0  # Handle None
+            pot = pot / 0.50  # Normalize to BB
             
             encoded_action = [
                 player_idx / 8.0,  # Normalize player index (assuming max 9 players)

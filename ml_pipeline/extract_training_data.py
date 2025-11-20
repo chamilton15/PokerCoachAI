@@ -46,7 +46,15 @@ def parse_action_string(action_str: str) -> Dict[str, Any]:
     
     # Extract player marker (p1, p2, etc.)
     player_marker = parts[0]
-    player_idx = int(player_marker[1:]) - 1  # Convert p1 -> 0, p2 -> 1
+    
+    # Validate player marker format
+    if not player_marker.startswith('p') or len(player_marker) < 2:
+        return None
+    
+    try:
+        player_idx = int(player_marker[1:]) - 1  # Convert p1 -> 0, p2 -> 1
+    except (ValueError, IndexError):
+        return None
     
     # Extract action type
     action_type = parts[1]  # 'f', 'cc', 'cbr', 'cr'
@@ -171,6 +179,14 @@ def extract_current_state(hand: Hand, player_idx: int, history: List[Dict]) -> D
                 hand_score, hand_type = evaluator.evaluate_preflop_strength(cards)
             break
     
+    # Get position (do this before street loop)
+    position = 'unknown'
+    if player_idx < len(hand.players):
+        try:
+            position = hand.get_player_position(hand.players[player_idx])
+        except:
+            position = 'unknown'
+    
     # Determine street
     street = 'preflop'
     board_cards = []
@@ -184,12 +200,6 @@ def extract_current_state(hand: Hand, player_idx: int, history: List[Dict]) -> D
                 street = 'turn'
             elif len(board_cards) == 5:
                 street = 'river'
-    
-            # Get position
-            if player_idx < len(hand.players):
-                position = hand.get_player_position(hand.players[player_idx])
-            else:
-                position = 'unknown'
     
     # Calculate pot size
     pot_size = sum(hand.blinds[:2]) if len(hand.blinds) >= 2 else 0.75
